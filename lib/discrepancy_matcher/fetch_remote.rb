@@ -11,8 +11,8 @@ module DiscrepancyMatcher
       new(*args).call
     end
 
-    def initialize(url)
-      @uri = URI.parse(url)
+    def initialize
+      @uri = URI.parse(Config.remote_url)
     end
 
     def call

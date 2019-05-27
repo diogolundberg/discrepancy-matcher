@@ -4,9 +4,13 @@ require 'discrepancy_matcher'
 
 RSpec.describe DiscrepancyMatcher::FetchRemote do
   let(:url) { 'https://httpstat.us/201' }
-  subject(:service) { described_class.new(url) }
+  subject(:service) { described_class.new }
 
   describe '#call' do
+    before do
+      allow(DiscrepancyMatcher::Config).to receive(:remote_url).and_return(url)
+    end
+
     context 'when response is valid', vcr: { cassette_name: 'valid' } do
       let(:url) { 'https://mockbin.org/valid' }
 
