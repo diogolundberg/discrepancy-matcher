@@ -12,7 +12,11 @@ module DiscrepancyMatcher
 
     def call
       @fetch_remote = fetch_remote_service.call
-      result(success?: true, result: match_data)
+      if fetch_remote.success?
+        result(success?: true, result: match_data)
+      else
+        result(success?: false, error: fetch_remote.error)
+      end
     end
 
     private
@@ -21,7 +25,7 @@ module DiscrepancyMatcher
 
     def match_data
       fetch_remote.result.inject([]) do |result, remote|
-        reference = remote[:reference]
+        reference = remote['reference']
         local = find_local(reference)
         discrepancies = {}
         %i[status description].each do |attribute|
@@ -42,9 +46,9 @@ module DiscrepancyMatcher
     end
 
     def find_discrepancy(local, remote, attribute)
-      return unless local[attribute] != remote[attribute]
+      return unless local[attribute] != remote[attribute.to_s]
 
-      { local: local[attribute] || '', remote: remote[attribute] }
+      { local: local[attribute] || '', remote: remote[attribute.to_s] }
     end
   end
 end
