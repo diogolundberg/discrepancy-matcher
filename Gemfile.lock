@@ -22,6 +22,8 @@ GEM
       rspec-support (~> 3.8.0)
     rspec-support (3.8.0)
     safe_yaml (1.0.5)
+    sequel (5.20.0)
+    sqlite3 (1.4.1)
     vcr (4.0.0)
     webmock (3.5.1)
       addressable (>= 2.3.6)
@@ -33,6 +35,8 @@ PLATFORMS
 
 DEPENDENCIES
   rspec
+  sequel
+  sqlite3
   vcr
   webmock
 
