@@ -2,24 +2,19 @@
 
 require 'net/http'
 require 'json'
+require 'service'
 
 module DiscrepancyMatcher
-  class FetchRemote
-    Result = Struct.new(:success?, :result, :error, keyword_init: true)
-
-    def self.call(*args)
-      new(*args).call
-    end
-
+  class FetchRemote < Service
     def initialize
       @uri = URI.parse(Config.remote_url)
     end
 
     def call
       fetch
-      Result.new(success?: true, result: body['ads'] || [])
+      result(success?: true, result: body['ads'] || [])
     rescue JSON::ParserError, Net::HTTPError => e
-      Result.new(success?: false, error: e)
+      result(success?: false, error: e)
     end
 
     private

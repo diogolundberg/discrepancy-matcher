@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
+require 'service'
+
 module DiscrepancyMatcher
-  class Match
-    Result = Struct.new(:success?, :result, keyword_init: true)
-
-    def self.call(*args)
-      new(*args).call
-    end
-
+  class Match < Service
     def initialize(local_data, fetch_remote_service: {})
       @local_data = local_data.dup
       @fetch_remote_service = fetch_remote_service
@@ -15,7 +11,7 @@ module DiscrepancyMatcher
 
     def call
       @fetch_remote = fetch_remote_service.call
-      Result.new(success?: true, result: match_data)
+      result(success?: true, result: match_data)
     end
 
     private

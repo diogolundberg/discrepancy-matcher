@@ -6,6 +6,24 @@ RSpec.describe DiscrepancyMatcher::FetchRemote do
   let(:url) { 'https://httpstat.us/201' }
   subject(:service) { described_class.new }
 
+  describe '.call' do
+    subject(:service) { class_double('Match') }
+
+    before do
+      allow(service).to receive(:call)
+      allow(described_class).to receive(:new).and_return(service)
+      described_class.call
+    end
+
+    it 'initialize service instance with right parameters' do
+      expect(described_class).to have_received(:new)
+    end
+
+    it 'calls service instance' do
+      expect(service).to have_received(:call)
+    end
+  end
+
   describe '#call' do
     before do
       allow(DiscrepancyMatcher::Config).to receive(:remote_url).and_return(url)

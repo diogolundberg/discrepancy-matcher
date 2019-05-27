@@ -9,7 +9,7 @@ RSpec.describe DiscrepancyMatcher::Match do
     described_class.new(local, fetch_remote_service: fetch_remote_service)
   end
 
-  describe '#call' do
+  describe '.call' do
     subject(:service) { class_double('Match') }
 
     before do
