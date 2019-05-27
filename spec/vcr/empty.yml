@@ -1,0 +1,25 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://mockbin.org/empty
+  response:
+    status:
+      code: 200
+      message: OK
+    body:
+      encoding: ASCII-8BIT
+      string: |-
+        {
+        "data":
+            [
+                {
+                    "reference": "1",
+                    "status": "enabled",
+                    "description": "Description for campaign 11"
+                }
+            ]
+        }
+    http_version:
+  recorded_at: Mon, 27 May 2019 17:04:12 GMT
+recorded_with: VCR 4.0.0
