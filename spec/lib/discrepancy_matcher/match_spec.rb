@@ -29,14 +29,20 @@ RSpec.describe DiscrepancyMatcher::Match do
   end
 
   describe '#call' do
+    let(:fetch_remote) { double('Fetch Remote Result') }
+
+    before do
+      allow(fetch_remote_service).to receive(:call).and_return(fetch_remote)
+    end
+
     context 'when remotes are empty' do
-      before { allow(fetch_remote_service).to receive(:call).and_return([]) }
+      before { allow(fetch_remote).to receive(:result).and_return([]) }
 
       it 'is a success' do
         expect(service.call).to be_success
       end
 
-      it 'returns empty results' do
+      it 'returns empty result' do
         expect(service.call.result).to be_empty
       end
     end
@@ -56,7 +62,7 @@ RSpec.describe DiscrepancyMatcher::Match do
           },
         ]
 
-        allow(fetch_remote_service).to receive(:call).and_return(remote_data)
+        allow(fetch_remote).to receive(:result).and_return(remote_data)
       end
 
       context 'and have no local match' do
@@ -68,7 +74,7 @@ RSpec.describe DiscrepancyMatcher::Match do
           expected = [
             {
               'remote_reference': '1',
-              'discrepancies': [
+              'discrepancies': {
                 'status': {
                   'remote': 'enabled',
                   'local': '',
@@ -77,11 +83,11 @@ RSpec.describe DiscrepancyMatcher::Match do
                   'remote': 'Description 1',
                   'local': '',
                 },
-              ],
+              },
             },
             {
               'remote_reference': '2',
-              'discrepancies': [
+              'discrepancies': {
                 'status': {
                   'remote': 'disabled',
                   'local': '',
@@ -90,7 +96,53 @@ RSpec.describe DiscrepancyMatcher::Match do
                   'remote': 'Description 2',
                   'local': '',
                 },
-              ],
+              },
+            },
+          ]
+
+          expect(service.call.result).to match_array(expected)
+        end
+      end
+
+      context 'and have local discrepancies' do
+        let(:local) do
+          [
+            {
+              'external_reference': '1',
+              'status': 'enabled',
+              'ad_description': 'Local Description 1',
+            },
+            {
+              'external_reference': '2',
+              'status': 'paused',
+              'ad_description': 'Description 2',
+            },
+          ]
+        end
+
+        it 'is a success' do
+          expect(service.call).to be_success
+        end
+
+        it 'returns discrepancies for remote fields' do
+          expected = [
+            {
+              'remote_reference': '1',
+              'discrepancies': {
+                'description': {
+                  'remote': 'Description 1',
+                  'local': 'Local Description 1',
+                },
+              },
+            },
+            {
+              'remote_reference': '2',
+              'discrepancies': {
+                'status': {
+                  'remote': 'disabled',
+                  'local': 'paused',
+                },
+              },
             },
           ]
 
