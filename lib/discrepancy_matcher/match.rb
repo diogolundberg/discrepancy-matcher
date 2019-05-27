@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'service'
+require 'discrepancy_matcher/fetch_remote'
 
 module DiscrepancyMatcher
   class Match < Service
-    def initialize(local_data, fetch_remote_service: {})
+    def initialize(local_data, fetch_remote_service: FetchRemote)
       @local_data = local_data.dup
       @fetch_remote_service = fetch_remote_service
     end
